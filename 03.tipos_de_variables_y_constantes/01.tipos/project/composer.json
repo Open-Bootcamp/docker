@@ -1,0 +1,21 @@
+{
+    "name": "root/www",
+    "description": "php 8",
+    "type": "project",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Root\\Www\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Héctor Franco",
+            "email": "hector.franco.aceituno@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require-dev": {
+        "phpunit/phpunit": "^9.5"
+    }
+}

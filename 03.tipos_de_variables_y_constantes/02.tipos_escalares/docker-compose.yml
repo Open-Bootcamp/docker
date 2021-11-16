@@ -1,0 +1,60 @@
+version: "3.8"
+services:
+
+    # PHP service
+    app:
+        build: ./docker/php
+        image: php_8_app
+        container_name: php_8_app
+        working_dir: /var/www/
+        volumes:
+            - ./project:/var/www
+            - ./log/php:/srv/var/log
+        networks:
+            - app-network
+
+    # MySQL database service
+    db:
+        image: mysql:5.7
+        container_name: php_8_mysql_5.7
+        ports:
+            - "3306:3306"
+        environment:
+            MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+            MYSQL_DATABASE: ${DB_DATABASE}
+            MYSQL_USER: ${DB_USERNAME}
+            MYSQL_PASSWORD: ${DB_PASSWORD}
+        env_file:
+            - ./.env
+        volumes:
+        - "./mysql/:/var/lib/mysql"
+        networks:
+            - app-network
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        container_name: php_8_phpmyadmin
+        environment:
+            PMA_HOST: db
+            PMA_PORT: 3306
+            PMA_ARBITRARY: 1    
+        restart: always
+        ports:
+            - 8080:80
+        networks:
+            - app-network
+    # Nginx service
+    nginx:
+        image: nginx:alpine
+        container_name: php_8_nginx
+        ports:
+            - 8000:80
+        volumes:
+            - ./project:/var/www
+            - ./docker/nginx/conf.d/:/etc/nginx/conf.d/
+            - ./log/nginx:/var/log/nginx/
+        networks:
+            - app-network
+
+networks:
+    app-network:
+        driver: bridge
