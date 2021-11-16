@@ -1,0 +1,7 @@
+version: '3'
+services:
+  web-2: 
+    container_name: "nginx-v2"
+    ports:
+      - "8081:80"
+    image: nginx

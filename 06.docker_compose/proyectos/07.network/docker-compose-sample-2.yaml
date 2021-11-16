@@ -1,0 +1,25 @@
+# SEUDO EJEMPLO
+version: '2'
+services:
+  mullvad:
+    container_name: <container_name>
+    image: <vpn_server_image>
+    command: sleep infinity
+    volumes:
+      - "./openvpn:/etc/openvpn"
+    networks:
+      vpn:
+        ipv4_address: 172.20.0.1
+    devices:
+      - "/dev/net/tun:/dev/net/tun"
+    privileged: true
+    cap_add:
+      - NET_ADMIN
+networks:
+  vpn:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.20.0.0/16
+          gateway 172.20.0.1

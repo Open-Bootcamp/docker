@@ -1,0 +1,54 @@
+# SEUDO EJEMPLO
+version: '2'
+services:
+  host_0_10:
+    cap_add:
+      - NET_ADMIN
+    container_name: host_0_10
+    stdin_open: true
+    tty: true
+    entrypoint: /bin/bash
+    networks:
+      net_0_0:
+        ipv4_address: 10.10.0.10
+    image: centos:rafa
+  host_1_10:
+    cap_add:
+      - NET_ADMIN
+    container_name: host_1_10
+    stdin_open: true
+    tty: true
+    entrypoint: /bin/bash
+    networks:
+      net_1_0:
+        ipv4_address: 10.10.1.10
+    image: centos:rafa
+  router:
+    container_name: router
+    stdin_open: true
+    tty: true
+    entrypoint: /bin/bash
+    networks:
+      net_0_0:
+        ipv4_address: 10.10.0.1
+      net_1_0:
+        ipv4_address: 10.10.1.1
+    image: centos:rafa
+networks:
+  net_0_0:
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.10.0.0/24
+          gateway: 10.10.0.254
+  net_1_0:
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.10.1.0/24
+          gateway: 10.10.1.254
+## ADD these commands to the hosts to change their default GTW:
+  # docker exec host_0_10 ip route del default
+  # docker exec host_0_10 ip route add default via 10.10.0.1
+  # docker exec host_1_10 ip route del default
+  # docker exec host_1_10 ip route add default via 10.10.1.1

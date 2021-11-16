@@ -1,0 +1,18 @@
+version: '3'
+services:
+  web-1:
+    container_name: nginx
+    ports:
+      - "8080:80"
+    image: nginx
+    networks: 
+      - net-web
+  web-2:
+    container_name: nginx-2
+    ports:
+      - "8081:80"
+    image: nginx
+    networks: 
+      - net-web
+networks:
+  net-web:

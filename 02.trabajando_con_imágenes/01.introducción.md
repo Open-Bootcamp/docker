@@ -1,0 +1,335 @@
+## Ver todas las imágenes en local hasta ahora
+
+Mediante el comando `docker images` podemos listar todas las imágenes existentes en nuestro registry
+
+```bash
+$ docker images
+
+REPOSITORY                TAG                 IMAGE ID            CREATED             SIZE
+<none>                    <none>              77af4d6b9913        19 hours ago        1.089 GB
+committ                   latest              b6fa739cedf5        19 hours ago        1.089 GB
+<none>                    <none>              78a85c484f71        19 hours ago        1.089 GB
+docker                    latest              30557a29d5ab        20 hours ago        1.089 GB
+<none>                    <none>              5ed6274db6ce        24 hours ago        1.089 GB
+postgres                  9                   746b819f315e        4 days ago          213.4 MB
+postgres                  9.3                 746b819f315e        4 days ago          213.4 MB
+postgres                  9.3.5               746b819f315e        4 days ago          213.4 MB
+postgres                  latest              746b819f315e        4 days ago          213.4 MB
+```
+
+### `--filter`
+
+El **flag** (`f` o `--filter`) es de `key=value`. Si hay más de un filtro, entonces podríamos pasar múltiples flags (por ejemplo, `--filter "foo=bar" --filter "bif=baz"`).
+
+Los filtros admitidos actualmente son:
+
+- `dangling` (boolean - `true` o `false`)
+- `label` (`label=<key>` o `label=<key>=<value>`)
+
+```bash
+$  docker images --filter "dangling=true"
+
+REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+<none>              <none>              8abc22fbb042        4 weeks ago         0 B
+<none>              <none>              48e5f45168b9        4 weeks ago         2.489 MB
+<none>              <none>              bf747efa0e2f        4 weeks ago         0 B
+<none>              <none>              980fe10e5736        12 weeks ago        101.4 MB
+<none>              <none>              dea752e4e117        12 weeks ago        101.4 MB
+<none>              <none>              511136ea3c5a        8 months ago        0 B
+```
+
+## Descargar una imagen sin tener que ejecutar un contenedor
+
+Para descargar una imagen o un repositorio de un registro usaremos:
+
+> ⚙️ **sintaxis**, `docker pull [OPTIONS] NAME[:TAG|@DIGEST]`
+
+```bash
+$  docker pull mysql
+
+Using default tag: latest
+latest: Pulling from library/mysql
+b380bbd43752: Already exists
+# ...
+```
+
+### Descargar una versión/tag específico de una imagen
+
+```bash
+$  docker pull redis:6.0.5
+6.0.5: Pulling from library/redis
+8559a31e96f4: Already exists
+85a6a5c53ff0: Pull complete
+# ...
+```
+
+> _Al no especificar ninguna etiqueta se baja la por defecto, que es `latest`_
+
+### Descargar una imagen a través de su digest
+
+Las imágenes que utilizan el _formato v2_ o posterior tienen un identificador de contenido llamado "**digest**". Mientras la entrada utilizada para generar la imagen no cambie, el valor del resumen es predecible. Para listar los valores del resumen de la imagen, utilice el indicador `--digests`:
+
+```bash
+$ docker images --digests
+
+REPOSITORY            TAG       DIGEST                                                                    IMAGE ID       CREATED         SIZE
+busybox               latest    sha256:15e927f78df2cc772b70713543d6b651e3cd8370abf86b2ea4644a9fba21107f   cabb9f684f8b   7 days ago      1.24MB
+mysql                 latest    sha256:6d7d4524463fe6e2b893ffc2b89543c81dec7ef82fb2020a1b27606666464d87   ecac195d15af   2 weeks ago     516MB
+ubuntu                latest    sha256:626ffe58f6e7566e00254b638eb7e0f3b11d4da9675088f4781a50ae288f3322   ba6acccedd29   2 weeks ago     72.8MB
+nginx                 latest    sha256:644a70516a26004c97d0d85c7fe1d0c3a67ea8ab7ddf4aff193d9f301670cf36   87a94228f133   3 weeks ago     133MB
+hello-world           latest    sha256:37a0b92b08d4919615c3ee023f7ddb068d12b8387475d64c622ac30f45c29c51   feb5d9fea6a5   5 weeks ago     13.3kB
+centos                latest    sha256:a27fd8080b517143cbbbab9dfb7c8571c40d67d534bbdee55bd6c473f432b177   5d0da3dc9764   7 weeks ago     231MB
+portainer/portainer   latest    sha256:fb45b43738646048a0a0cc74fcee2865b69efde857e710126084ee5de9be0f3f   580c0e4e98b0   7 months ago    79.1MB
+redis                 6.0.5     sha256:800f2587bf3376cb01e6307afe599ddce9439deafbd4fb8562829da96085c9c5   235592615444   17 months ago   104MB
+```
+
+Para descargar una imagen por su `digest` en lugar de por el `tag` usaremos:
+
+```bash
+$ docker pull redis@sha256:800f2587bf3376cb01e6307afe599ddce9439deafbd4fb8562829da96085c9c5
+```
+
+### Descargar todas las versiones/tags de una imagen
+
+Para descargar todas las versiones/tags de una imagen, usaremos la bandera `-a` o `--all`
+
+```bash
+$ docker pull -a jenkins
+
+1.554: Pulling from library/jenkins
+Image docker.io/library/jenkins:1.554 uses outdated schema1 manifest format. Please upgrade to a schema2 image for better future compatibility. More information at https://docs.docker.com/registry/spec/deprecated-schema-v1/
+a3ed95caeb02: Pull complete
+# ...
+8daa20fcaafe: Pull complete
+Digest: sha256:69ad4ceeec41a3bc7e6eb33bfa6a0aed9ea4d69ce8132b2930a98302e7ba8e23
+
+1.554.1: Pulling from library/jenkins
+Image docker.io/library/jenkins:1.554.1 uses outdated schema1 manifest format. Please upgrade to a schema2 image for better future compatibility. More information at https://docs.docker.com/registry/spec/deprecated-schema-v1/
+a3ed95caeb02: Download complete
+8ebf33733a25: Downloading [===================>                               ]  19.79MB/50.97MB
+bd2bb8df9a1b: Downloading [===>                                               ]  13.98MB/197.7MB
+# ...
+```
+
+
+### Filtrar la búsqueda por estrellas
+ 
+Podemos buscar una imagen (🔎) obteniendo sólo las que tienen más de **X** estrellas, así:
+
+```bash
+# Al menos 50 estrellas
+$ docker search --filter=stars=3 --no-trunc busybox
+
+NAME                 DESCRIPTION                                                                               STARS     OFFICIAL   AUTOMATED
+busybox              Busybox base image.                                                                       325       [OK]
+progrium/busybox                                                                                               50                   [OK]
+radial/busyboxplus   Full-chain, Internet enabled, busybox made from scratch. Comes in git and cURL flavors.   8                    [OK]
+```
+
+### Filtrar la búsqueda en imágenes oficiales
+
+Podemos buscar una imagen (🔎) obteniendo sólo la **oficial**, así:
+
+```bash
+$ docker search --filter is-official=true --filter stars=3 busybox
+
+NAME      DESCRIPTION           STARS     OFFICIAL   AUTOMATED
+busybox   Busybox base image.   325       [OK]
+```
+
+### 🔎 Buscar imágenes en Docker Hub usando JQ
+
+El comando de la CLI de docker no te devuelve los tags, pero puedes hacerlo instalando JQ ([https://stedolan.github.io/jq/](https://stedolan.github.io/jq/))
+
+> Para instalar `jq` en ubuntu usaremos `sudo apt-get update` y `sudo apt-get install jq``
+
+```bash
+$ sudo apt-get update
+Get:1 http://security.ubuntu.com/ubuntu bionic-security InRelease [88.7 kB]
+# ...
+Fetched 23.7 MB in 17s (1424 kB/s)
+Reading package lists... Done
+
+$ sudo apt-get install jq
+Reading package lists... Done
+# ...
+/sbin/ldconfig.real: /usr/lib/wsl/lib/libcuda.so.1 is not a symbolic link
+```
+
+```bash
+$ curl -s -S 'https://registry.hub.docker.com/v2/repositories/library/nginx/tags/' | jq '."results"[]["name"]' | sort
+
+"1.21"
+"1.21-perl"
+"1.21.3"
+"1.21.3-perl"
+"latest"
+"mainline"
+"mainline-perl"
+"perl"
+"stable"
+"stable-perl"
+```
+
+## 👌 Buenas prácticas al crear un Dockerfile
+
+* **Los contenedores deber ser "efímeros"**
+* **Uso de ficheros [.dockerignore](.dockerignore)** 
+* **No instalar paquetes innecesarios**
+* **Minimizar el número de capas**
+* **Indicar las instrucciones a ejecutar en múltiples líneas**
+
+```bash
+RUN apt-get update && apt-get install -y \
+git \
+wget \
+apache2 \
+php5
+```
+
+## Instrucciones de Dockerfile
+
+* [FROM](#FROM)
+* [ARG](#ARG)
+* [MAINTAINER](#MAINTAINER)
+* [RUN](#RUN)
+* [ENV](#ENV)
+* [ADD](#ADD)
+* [COPY](#COPY)
+* [CMD](#CMD)
+* [ENTRYPOINT](#ENTRYPOINT)
+* [WORKDIR](#WORKDIR)
+* [EXPOSE](#EXPOSE)
+* [LABEL](#LABEL)
+* [USER](#USER)
+* [VOLUME](#VOLUME)
+
+## FROM
+
+`FROM` indica la imagen base que va a utilizar para seguir futuras instrucciones. Buscará si la imagen se encuentra localmente, en caso de que no, la descargará de internet.
+
+> ⚙️ **sintaxis**, `FROM <imagen>` o `FROM <imagen>:<tag>`
+
+
+## ARG
+
+Las instrucciones `FROM` soportan variables que son declaradas por cualquier instrucción `ARG` que ocurra antes del primer `FROM`
+
+> ⚙️ **sintaxis**, `ARG <name>[=<default value>]`
+
+```dockerfile
+ARG VERSION=latest
+FROM busybox:$VERSION
+ARG VERSION
+RUN echo $VERSION > image_version
+```
+
+## MAINTAINER
+
+Esta instrucción nos permite configurar datos del autor que genera la imagen.
+
+> ⚙️ **sintaxis**, `MAINTAINER <nombre> <Correo>`
+
+## RUN
+
+Esta instrucción ejecuta cualquier comando en una capa nueva encima de una imagen y hace un commit de los resultados. Esa nueva imagen intermedia es usada para el siguiente paso en el **Dockerfile**. RUN tiene 2 formatos:
+
+El modo shell: `/bin/sh -c`,
+
+```dockerfile
+RUN <comando>
+```
+
+## ENV
+
+Esta instrucción configura las variables de ambiente, estos valores estarán en los ambientes de todos los comandos que sigan en el **Dockerfile**.
+
+> ⚙️ **sintaxis**, `ENV <key> <value>` o `ENV <key>=<value>`
+
+## ADD
+
+Esta instrucción copia los archivos o directorios de una ubicación especificada y los agrega al sistema de archivos del contenedor en la ruta especificada. Tiene dos formas:
+
+> ⚙️ **sintaxis**, `ADD <src>... <dest>` o `ADD ["<src>",... "<dest>"]`
+
+**IMPORTANTE:** Diferencia entre `COPY` y `ADD`, `ADD` además permite copiar contenido a partir de url.
+
+## COPY
+
+**IMPORTANTE:** Diferencia entre `COPY` y `ADD`, `ADD` además permite copiar contenido a partir de url.
+
+## CMD
+
+La instrucción `CMD` tiene tres formas:
+
+> ⚙️ **sintaxis**, `CMD ["ejecutable", "param1", "param2"]` (forma exec, es la preferida), `CMD ["param1", "param2"]` (como parámetros por defecto de ENTRYPOINT) o `CMD comando param1 param2` (forma shell)
+
+## ENTRYPOINT
+
+Un `ENTRYPOINT` le permite configurar un contenedor que se ejecutará como un ejecutable.
+
+> ⚙️ **sintaxis**, `ENTRYPOINT ["executable", "param1", "param2"]`
+
+## WORKDIR
+
+La instrucción `WORKDIR` establece el directorio de trabajo para cualquier instrucción `RUN`, `CMD`, `ENTRYPOINT`, `COPY` y `ADD` que le siga en el **Dockerfile**. Si el `WORKDIR` no existe, se creará aunque no se utilice en ninguna instrucción **Dockerfile** posterior.
+
+> ⚙️ **sintaxis**, `WORKDIR /path/to/workdir`
+
+```dockerfile
+WORKDIR /a
+WORKDIR b
+WORKDIR c
+RUN pwd
+```
+
+## EXPOSE
+
+La instrucción `EXPOSE` informa a **Docker** que el contenedor escucha en los puertos de red especificados en tiempo de ejecución. Puede especificar si el puerto escucha en `TCP` o `UDP`, y el valor predeterminado es `TCP` si no se especifica el protocolo.
+
+> ⚙️ **sintaxis**, `EXPOSE <port> [<port>/<protocol>...]`
+
+## LABEL
+
+La instrucción `LABEL` añade metadatos a una imagen. Una `ETIQUETA` es un par _clave-valor_. Para incluir espacios dentro de un valor de `LABEL`, utilice comillas y barras invertidas como lo haría en el análisis de la línea de comandos. Algunos ejemplos de uso:
+
+> ⚙️ **sintaxis**, `LABEL <key>=<value> <key>=<value> <key>=<value> ...`
+
+```dockerfile
+LABEL "com.example.vendor"="ACME Incorporated"
+LABEL com.example.label-with-value="foo"
+LABEL version="1.0"
+LABEL description="Este texto ilustra
+que los valores de las etiquetas pueden abarcar varias líneas".
+```
+
+## USER
+
+La instrucción `USER` establece el _nombre de usuario_ (o `UID`) y, opcionalmente, el grupo de usuarios (o GID) que se utilizará al ejecutar la imagen y para cualquier instrucción `RUN`, `CMD` y `ENTRYPOINT` que le siga en el **Dockerfile**.
+
+> ⚙️ **sintaxis**, `USER <user>[:<group>]` o `USER <UID>[:<GID>]`
+
+## VOLUMES
+
+La instrucción `VOLUME` crea un punto de montaje con el nombre especificado y lo marca como contenedor de volúmenes montados externamente desde el host nativo u otros contenedores. El valor puede ser una matriz `JSON`, `VOLUME ["/var/log/"]`, o una cadena simple con múltiples argumentos, como `VOLUME /var/log` o `VOLUME /var/log /var/db`. 
+
+> ⚙️ **sintaxis**, `VOLUME ["/data"]`
+
+## buenas prácticas
+
+Ahora veremos una serie de buenas prácticas a utilizar, consistente en la forma de escribir el código y encadenarlo.
+
+```dockerfile
+FROM nginx
+
+# LABEL version=1
+# RUN echo "1" >> /usr/share/nginx/html/test.txt
+# RUN echo "2" >> /usr/share/nginx/html/test.txt
+# RUN echo "3" >> /usr/share/nginx/html/test.txt
+
+LABEL version=2
+RUN \
+    echo "1" >> /usr/share/nginx/html/test.txt && \
+    echo "2" >> /usr/share/nginx/html/test.txt && \
+    echo "3" >> /usr/share/nginx/html/test.txt
+```

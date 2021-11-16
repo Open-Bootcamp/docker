@@ -1,0 +1,5 @@
+FROM centos
+
+RUN echo hola
+
+docker build --tag <image-name>:<image-tag> -f <new-name-dockerfile> <location-new-dockerfile>

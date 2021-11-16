@@ -1,0 +1,6 @@
+version: '3'
+services:
+  web-1:
+    container_name: web-1
+    image: web-test
+    build: .
